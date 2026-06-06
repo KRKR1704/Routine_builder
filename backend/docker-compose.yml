@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: routine
+      POSTGRES_PASSWORD: routine
+      POSTGRES_DB: routine_recovery
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://routine:routine@db:5432/routine_recovery
+      APP_ENV: development
+      API_V1_PREFIX: /api/v1
+    depends_on:
+      - db
+
+volumes:
+  pgdata:

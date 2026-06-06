@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+sqlmodel
+pydantic
+pydantic-settings
+python-dotenv
+psycopg2-binary
+bcrypt
+pytest
+httpx

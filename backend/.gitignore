@@ -1,0 +1,30 @@
+# Secrets — never commit these
+.env
+.env.*
+!.env.example
+
+# SQLite (local dev fallback)
+*.db
+*.sqlite
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build
+dist/
+build/
+*.egg-info/
