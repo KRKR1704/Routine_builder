@@ -39,6 +39,12 @@
         "projectId": "9a79c3f1-289b-4898-946a-bf4cdfa71280"
       }
     },
-    "owner": "zabuza17"
+    "owner": "zabuza17",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/9a79c3f1-289b-4898-946a-bf4cdfa71280"
+    }
   }
 }
