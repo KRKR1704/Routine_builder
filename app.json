@@ -32,6 +32,13 @@
           "enableBackgroundRemoteNotifications": false
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "9a79c3f1-289b-4898-946a-bf4cdfa71280"
+      }
+    },
+    "owner": "zabuza17"
   }
 }
