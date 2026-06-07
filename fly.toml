@@ -1,23 +1,29 @@
-# fly.toml app configuration file generated for routine-builder on 2026-06-06T22:10:15Z
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
+# fly.toml — Fly.io deployment configuration
+# Run: fly launch (first time) or fly deploy
 
-app = 'routine-builder'
-primary_region = 'iad'
+app = "routine-recovery-api"
+primary_region = "iad"
 
 [build]
+  dockerfile = "backend/Dockerfile"
+
+[env]
+  APP_ENV = "production"
+  API_V1_PREFIX = "/api/v1"
 
 [http_service]
-  internal_port = 8080
+  internal_port = 8000
   force_https = true
-  auto_stop_machines = 'stop'
+  auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 0
-  processes = ['app']
+
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 25
+    soft_limit = 20
 
 [[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
+  memory = "256mb"
+  cpu_kind = "shared"
   cpus = 1
-  memory_mb = 256
