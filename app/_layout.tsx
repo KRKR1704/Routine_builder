@@ -6,7 +6,10 @@ import { View, Text, ScrollView } from 'react-native';
 import * as Notifications from 'expo-notifications';
 
 import { UserProvider } from '../contexts/UserContext';
-import { requestNotificationPermissions } from '../utils/notifications';
+import {
+  initNotificationHandler,
+  requestNotificationPermissions,
+} from '../utils/notifications';
 
 // ── Error boundary — shows the real crash message in Expo Go ─────────────────
 class ErrorBoundary extends Component<
@@ -43,20 +46,19 @@ export default function RootLayout() {
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
 
   useEffect(() => {
+    // Init handler inside React lifecycle (not at module level) — safe in Expo Go
+    initNotificationHandler();
+
     // Ask for notification permissions once on first launch
-    requestNotificationPermissions().catch(() => {
-      // Permissions denied or unavailable — non-fatal
-    });
+    requestNotificationPermissions().catch(() => {});
 
     // Listen for notifications received while app is foregrounded
-    notificationListener.current = Notifications.addNotificationReceivedListener(() => {
-      // Could badge-update or show in-app toast here in a future version
-    });
-
-    // Listen for user tapping a notification
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(() => {
-      // Could deep-link to today screen here in a future version
-    });
+    try {
+      notificationListener.current = Notifications.addNotificationReceivedListener(() => {});
+      responseListener.current = Notifications.addNotificationResponseReceivedListener(() => {});
+    } catch {
+      // Listeners unavailable in some Expo Go environments — non-fatal
+    }
 
     return () => {
       notificationListener.current?.remove();
@@ -66,25 +68,25 @@ export default function RootLayout() {
 
   return (
     <ErrorBoundary>
-    <SafeAreaProvider>
-      <UserProvider>
-        <StatusBar style="light" />
-        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#0d0f14' } }}>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="login" options={{ headerShown: false }} />
-          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="sleep"
-            options={{
-              headerShown: false,
-              presentation: 'modal',
-              animation: 'slide_from_bottom',
-            }}
-          />
-        </Stack>
-      </UserProvider>
-    </SafeAreaProvider>
+      <SafeAreaProvider>
+        <UserProvider>
+          <StatusBar style="light" />
+          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#0d0f14' } }}>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="login" options={{ headerShown: false }} />
+            <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="sleep"
+              options={{
+                headerShown: false,
+                presentation: 'modal',
+                animation: 'slide_from_bottom',
+              }}
+            />
+          </Stack>
+        </UserProvider>
+      </SafeAreaProvider>
     </ErrorBoundary>
   );
 }
