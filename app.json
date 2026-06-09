@@ -31,8 +31,7 @@
           "defaultChannel": "routine-reminders",
           "enableBackgroundRemoteNotifications": false
         }
-      ],
-      "expo-status-bar"
+      ]
     ],
     "extra": {
       "router": {},

@@ -1,11 +1,42 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useRef } from 'react';
+import { Component, useEffect, useRef } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { View, Text, ScrollView } from 'react-native';
 import * as Notifications from 'expo-notifications';
 
 import { UserProvider } from '../contexts/UserContext';
 import { requestNotificationPermissions } from '../utils/notifications';
+
+// ── Error boundary — shows the real crash message in Expo Go ─────────────────
+class ErrorBoundary extends Component<
+  { children: React.ReactNode },
+  { error: Error | null }
+> {
+  state = { error: null };
+  static getDerivedStateFromError(error: Error) { return { error }; }
+  render() {
+    const { error } = this.state;
+    if (error) {
+      return (
+        <View style={{ flex: 1, backgroundColor: '#0d0f14', padding: 24, paddingTop: 60 }}>
+          <Text style={{ color: '#ff4444', fontSize: 18, fontWeight: 'bold', marginBottom: 12 }}>
+            App Crash
+          </Text>
+          <ScrollView>
+            <Text style={{ color: '#ffffff', fontSize: 13, marginBottom: 8 }}>
+              {(error as Error).message}
+            </Text>
+            <Text style={{ color: '#888', fontSize: 11 }}>
+              {(error as Error).stack}
+            </Text>
+          </ScrollView>
+        </View>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export default function RootLayout() {
   const notificationListener = useRef<Notifications.EventSubscription | null>(null);
@@ -34,6 +65,7 @@ export default function RootLayout() {
   }, []);
 
   return (
+    <ErrorBoundary>
     <SafeAreaProvider>
       <UserProvider>
         <StatusBar style="light" />
@@ -53,5 +85,6 @@ export default function RootLayout() {
         </Stack>
       </UserProvider>
     </SafeAreaProvider>
+    </ErrorBoundary>
   );
 }
